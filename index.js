@@ -26,7 +26,7 @@ app.get('/', (req, res, next) => {
         console.log(testData);
         res.send(testData.rows);
     })
-    .chatch(err => {
+    .catch(err => {
         console.error(err);
         res.status(500).send('Internal Server Error');
     });
