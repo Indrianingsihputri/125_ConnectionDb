@@ -48,4 +48,31 @@ const validateBody = (schema) => (red, res, next) => {
             }))
         });
     }
-}
+    red.validateBody = result.data;
+    next();
+};
+
+app.post('/api/chat', validateBody(chatRequestSchema), async (req, res) => {
+    const { prompt, model, temperture } = req.validateBody;
+
+    try {
+        const response = await fetch('https://operouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                prompt,
+                model,
+                temperature: temperture
+            })
+        });
+    } catch (error) {
+        console.error('Error fetching OpenRouter API:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Internal server error'
+        });
+    }
+})
